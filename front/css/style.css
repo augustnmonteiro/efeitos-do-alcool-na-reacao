@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+#container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: dimgrey;
+}
+
+#container-colors {
+    display: block;
+}
+#color-red {
+    width: 350px;
+    height: 300px;
+    background-color: red;
+    display: none;
+}
+
+#color-blue {
+    width: 350px;
+    height: 300px;
+    background-color: blue;
+    display: none;
+}
+
+#dataUsers {
+    display: block;
+}
