@@ -5,11 +5,32 @@ let reacaoBranco = 0;
 let reacaoAmarelo = 0;
 let endTime = null;
 
+function createUser(name, dose) {
+    let counter = localStorage.getItem('counter');
+    counter = counter ? parseInt(counter) : 0;
+    const id = counter;
+
+    const data = {name: name, dose: dose, errorWhite: 0, errorOrange: 0, timeReaction: [], mediaTimeReaction: null}
+    const dataJson = JSON.stringify(data);
+    localStorage.setItem('Data', dataJson);
+
+    localStorage.setItem(id, JSON.stringify(data));
+    counter++;
+    localStorage.setItem('counter', counter.toString());
+}
+
+function updateData(data) {
+    //erro 
+}
+
 function start() {
     endTime = Date.now() + (30 * 1000);
     document.querySelector('#container').style.display = "none";
     document.body.style.backgroundColor = "white";
     currentColor = "White";
+    const name = document.querySelector('#username').value;
+    const dose = document.querySelector('#dose').value;
+    createUser(name, dose);
     nextColor();
 }
 
@@ -54,11 +75,20 @@ document.querySelector("#toggleStart").addEventListener('click', () => {
     start();
 });
 
+function calculateAverage(dataTime) {
+    const totalReactionTime = dataTime.reduce(function(a, b) {
+        return a + b;
+    }, 0);
+    const media = totalReactionTime / dataTime.length;
+    return media;
+}
+
 document.addEventListener("keydown", function (e) {
     if (e.code === "Space") {
         if (currentColor === "red") {
             tempoClique = (Date.now() - tempoDaUltimaCor);
             reacaoVermelho.push(tempoClique);
+            const media = calculateAverage(reacaoVermelho);//média de reação 
             nextColor();
             console.log("Tempo de Reação: " + tempoClique);
         } else if (currentColor === "white") {
