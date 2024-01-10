@@ -28,6 +28,60 @@ function createData() {
     localStorage.setItem(`Testes_${nameUser}`, JSON.stringify(testData));
 }
 
+function downloadCSV() {
+    let allKeys = Object.keys(localStorage);
+
+    if (allKeys.length === 0) {
+        console.error('Nenhum dado encontrado no localStorage.');
+        return;
+    }
+
+    let csvContent = 'data:text/csv;charset=utf-8,';
+
+    // Adicionar um cabeçalho genérico ao CSV
+    csvContent += 'id,name,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
+
+    allKeys.forEach(key => {
+        if (key.startsWith('Testes_')) {
+            // Obter os dados do localStorage para a chave específica
+            let testData = localStorage.getItem(key);
+
+            if (testData) {
+                // Converter os dados JSON para um array
+                let data = JSON.parse(testData);
+
+                // Adicionar os dados ao CSV
+                data.forEach(item => {
+                    csvContent += Object.values(item).join(',') + '\n';
+                });
+            }
+        }
+    });
+
+    let blob = new Blob([csvContent], { type: 'text/csv' });
+
+    let link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'todos_os_dados.csv';
+
+    // Adicionar o link ao documento e clicar nele para iniciar o download
+    document.body.appendChild(link);
+    link.click();
+
+    // Remover o link após o download
+    document.body.removeChild(link);
+}
+
+
+function exportData() {
+    const btnExportData = document.querySelector('#btn-exportData');
+
+    btnExportData.addEventListener('click', () => {
+        downloadCSV()
+    })
+}
+exportData()
+
 function controllerElementsAndStyle() {
     if (divContainer.style.display === "none") {
         console.log("IF");
