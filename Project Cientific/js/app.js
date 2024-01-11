@@ -46,7 +46,6 @@ function verifyDose() {
     nextColor();
 }
 
-// Função para formatar o array (timeReaction)
 function formatarArray(arr) {
     return arr.map(value => value.toString()).join(';');
 }
