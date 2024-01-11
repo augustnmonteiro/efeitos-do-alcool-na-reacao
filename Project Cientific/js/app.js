@@ -94,7 +94,6 @@ function exportData() {
         downloadCSV()
     })
 }
-exportData()
 
 function controllerElementsAndStyle() {
     if (divContainer.style.display === "none") {
@@ -187,6 +186,15 @@ document.addEventListener("keydown", function (e) {
     }
 });
 
+
+document.addEventListener("keydown", function (e) {
+    console.log(e)
+    if (e.code === "Space" && e.ctrlKey) {
+        console.log("atalho")
+        document.querySelector("#content-download").style.display = "block";
+    }
+});
+exportData()
 document.querySelector("#toggleStart").addEventListener('click', () => {
     console.log('Iniciei');
     start();
