@@ -52,7 +52,8 @@ function formatarArray(arr) {
 
 function downloadCSV() {
     let allKeys = Object.keys(localStorage);
-    console.log(allKeys);
+    allKeys.sort()
+    console.log("Lista Ordenada " + allKeys);
 
     if (allKeys.length === 0) {
         console.error('Nenhum dado encontrado no localStorage.');
@@ -114,6 +115,7 @@ function start() {
     const dose = document.querySelector('#dose').value;
     nameUser = name;
     doseUser = dose;
+    document.querySelector("#content-download").style.display = 'none';
     verifyDose();
 }
 
@@ -188,12 +190,24 @@ document.addEventListener("keydown", function (e) {
 
 
 document.addEventListener("keydown", function (e) {
-    console.log(e)
+    let contentBtnDownload = document.querySelector("#content-download");
+    let stateContentDownload = false;
+
+    if (contentBtnDownload.style.display === 'block') {
+        stateContentDownload = true;
+    } else {
+        stateContentDownload = false;
+    }
+
     if (e.code === "Space" && e.ctrlKey) {
-        console.log("atalho")
-        document.querySelector("#content-download").style.display = "block";
+        if (stateContentDownload === true) {
+            contentBtnDownload.style.display = "none";
+        } else {
+            contentBtnDownload.style.display = "block";
+        }
     }
 });
+
 exportData()
 document.querySelector("#toggleStart").addEventListener('click', () => {
     console.log('Iniciei');

@@ -8,6 +8,8 @@ body {
 #content-download {
     background-color: dimgrey;
     display: none;
+    position: fixed;
+    z-index: 10;
 }
 
 #btn-exportData {
