@@ -37,13 +37,28 @@ function verifyDose() {
         for (let i = 0; i < testData.length; i++) {
             console.log(testData[i].dose);
             if (testData[i].name === nameUser && testData[i].dose === doseUser) {
-                console.log("VOCÊ NÂO PODE REPETIR A DOSE");
+                alert(`${testData[i].name}, você não pode repetir o teste da ${testData[i].dose}° dose. Tente Novamente!`);
                 return;
             }
         }
     }
     controllerElementsAndStyle();
     nextColor();
+}
+
+function verifyUser(name, dose) {
+    console.log("To na verificação");
+    console.log("nome : " + name, "Dose : " + dose);
+
+    name = name.replace(/\s/g, '');
+
+    let verifyName = /^[a-zA-Z]+$/;
+
+    if (verifyName.test(name) && name != "" && dose != "") {
+        verifyDose();
+    } else {
+        alert("Preencha os dados para iniciar o teste");
+    }
 }
 
 function formatarArray(arr) {
@@ -62,17 +77,17 @@ function downloadCSV() {
 
     let csvContent = 'id,name,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
 
-    allKeys.forEach(key => {
-        if (key.startsWith('Testes_')) {
-            let testData = localStorage.getItem(key);
+    let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort();
 
-            if (testData) {
-                let data = JSON.parse(testData);
+    sortedKeys.forEach(key => {
+        let testData = localStorage.getItem(key);
 
-                data.forEach(item => {
-                    csvContent += Object.values(item).join(',') + '\n';
-                });
-            }
+        if (testData) {
+            let data = JSON.parse(testData);
+
+            data.forEach(item => {
+                csvContent += Object.values(item).join(',') + '\n';
+            });
         }
     });
 
@@ -88,6 +103,7 @@ function downloadCSV() {
     document.body.removeChild(link);
 }
 
+
 function exportData() {
     const btnExportData = document.querySelector('#btn-exportData');
 
@@ -98,7 +114,7 @@ function exportData() {
 
 function controllerElementsAndStyle() {
     if (divContainer.style.display === "none") {
-        divContainer.style.display = "block";
+        divContainer.style.display = "flex";
         document.body.style.backgroundColor = "white";
         stateDivContainer = false;
         currentColor = "white";
@@ -116,7 +132,8 @@ function start() {
     nameUser = name;
     doseUser = dose;
     document.querySelector("#content-download").style.display = 'none';
-    verifyDose();
+    nameUser = nameUser.replace(/\s+$/, '');
+    verifyUser(nameUser, doseUser);
 }
 
 function finish() {
@@ -159,7 +176,7 @@ function nextColor() {
 
 function calculateAverage(dataTime) {
     if (dataTime.length === 1) {
-        return dataTime[0]; // Se houver apenas um valor, retorne esse valor
+        return dataTime[0]; 
     }
 
     const totalReactionTime = dataTime.reduce(function (a, b) {
@@ -174,7 +191,7 @@ document.addEventListener("keydown", function (e) {
         if (currentColor === "red") {
             tempoClique = (Date.now() - lastColorTime);
             reactionRed.push(tempoClique);
-            const media = calculateAverage(reactionRed);//média de reação 
+            const media = calculateAverage(reactionRed);
             averageReactionTime = media;
             nextColor();
             console.log("Tempo de Reação: " + tempoClique);
