@@ -88,7 +88,6 @@ function downloadCSV() {
     document.body.removeChild(link);
 }
 
-
 function exportData() {
     const btnExportData = document.querySelector('#btn-exportData');
 
