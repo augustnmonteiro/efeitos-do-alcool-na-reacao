@@ -1,10 +1,10 @@
 let divContainer = document.querySelector('#container');
 let currentColor = "white";
-let tempoDaUltimaCor = null;
-let reacaoVermelho = [];
-let mediaVermelho = 0;
-let reacaoBranco = 0;
-let reacaoAmarelo = 0;
+let lastColorTime = null;
+let reactionRed = [];
+let averageReactionTime = 0;
+let ReactionWhite = 0;
+let reactionOrange = 0;
 let endTime = null;
 let counter = localStorage.getItem("counter");
 let lastID = counter ? parseInt(counter) : 0;
@@ -16,41 +16,59 @@ function createData() {
     let testData = JSON.parse(localStorage.getItem(`Testes_${nameUser}`) || "[]");
 
     testData.push({
-        id: testData.length + 1, 
+        id: testData.length + 1,
         name: nameUser,
         dose: doseUser,
-        errorWhite: reacaoBranco,
-        errorOrange: reacaoAmarelo,
-        timeReaction: reacaoVermelho,
-        mediaTimeReaction: mediaVermelho
+        errorWhite: ReactionWhite,
+        errorOrange: reactionOrange,
+        timeReaction: formatarArray(reactionRed),
+        mediaTimeReaction: parseFloat(averageReactionTime.toFixed(2))
     });
 
     localStorage.setItem(`Testes_${nameUser}`, JSON.stringify(testData));
 }
 
+function verifyDose() {
+    let testData = JSON.parse(localStorage.getItem(`Testes_${nameUser}`));
+    console.log(testData);
+    console.log(nameUser, doseUser);
+    if (testData) {
+        console.log("Verificação");
+        for (let i = 0; i < testData.length; i++) {
+            console.log(testData[i].dose);
+            if (testData[i].name === nameUser && testData[i].dose === doseUser) {
+                console.log("VOCÊ NÂO PODE REPETIR A DOSE");
+                return;
+            }
+        }
+    }
+    controllerElementsAndStyle();
+    nextColor();
+}
+
+// Função para formatar o array (timeReaction)
+function formatarArray(arr) {
+    return arr.map(value => value.toString()).join(';');
+}
+
 function downloadCSV() {
     let allKeys = Object.keys(localStorage);
+    console.log(allKeys);
 
     if (allKeys.length === 0) {
         console.error('Nenhum dado encontrado no localStorage.');
         return;
     }
 
-    let csvContent = 'data:text/csv;charset=utf-8,';
-
-    // Adicionar um cabeçalho genérico ao CSV
-    csvContent += 'id,name,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
+    let csvContent = 'id,name,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
 
     allKeys.forEach(key => {
         if (key.startsWith('Testes_')) {
-            // Obter os dados do localStorage para a chave específica
             let testData = localStorage.getItem(key);
 
             if (testData) {
-                // Converter os dados JSON para um array
                 let data = JSON.parse(testData);
 
-                // Adicionar os dados ao CSV
                 data.forEach(item => {
                     csvContent += Object.values(item).join(',') + '\n';
                 });
@@ -64,11 +82,9 @@ function downloadCSV() {
     link.href = window.URL.createObjectURL(blob);
     link.download = 'todos_os_dados.csv';
 
-    // Adicionar o link ao documento e clicar nele para iniciar o download
     document.body.appendChild(link);
     link.click();
 
-    // Remover o link após o download
     document.body.removeChild(link);
 }
 
@@ -84,14 +100,11 @@ exportData()
 
 function controllerElementsAndStyle() {
     if (divContainer.style.display === "none") {
-        console.log("IF");
-        console.log(divContainer.style.display);
         divContainer.style.display = "block";
         document.body.style.backgroundColor = "white";
         stateDivContainer = false;
         currentColor = "white";
     } else {
-        console.log("Else");
         divContainer.style.display = "none";
         document.body.style.backgroundColor = "white";
         currentColor = "White";
@@ -100,20 +113,19 @@ function controllerElementsAndStyle() {
 }
 function start() {
     endTime = Date.now() + (10 * 1000);
-    controllerElementsAndStyle();
     const name = document.querySelector('#username').value;
     const dose = document.querySelector('#dose').value;
     nameUser = name;
     doseUser = dose;
-    nextColor();
+    verifyDose();
 }
 
 function finish() {
     createData();
     controllerElementsAndStyle();
-    reacaoVermelho = [];
-    console.log("Acabou");
+    reactionRed = [];
     lastID++;
+    console.log("Acabou");
 }
 
 function nextColor() {
@@ -123,19 +135,18 @@ function nextColor() {
     }
 
     document.body.style.backgroundColor = "white";
-    tempoDaUltimaCor = Date.now();
+    lastColorTime = Date.now();
 
     let drawnColor = Math.random();
-    console.log(drawnColor);
-    
+
     setTimeout(() => {
         if (drawnColor > 0.5) {
             document.querySelector("body").style.backgroundColor = "red";
-            tempoDaUltimaCor = Date.now();
+            lastColorTime = Date.now();
             currentColor = "red";
         } else {
             document.querySelector("body").style.backgroundColor = "orange";
-            tempoDaUltimaCor = Date.now();
+            lastColorTime = Date.now();
             currentColor = "orange";
 
             setTimeout(() => {
@@ -151,8 +162,8 @@ function calculateAverage(dataTime) {
     if (dataTime.length === 1) {
         return dataTime[0]; // Se houver apenas um valor, retorne esse valor
     }
-    
-    const totalReactionTime = dataTime.reduce(function(a, b) {
+
+    const totalReactionTime = dataTime.reduce(function (a, b) {
         return a + b;
     }, 0);
     const media = totalReactionTime / dataTime.length;
@@ -162,19 +173,18 @@ function calculateAverage(dataTime) {
 document.addEventListener("keydown", function (e) {
     if (e.code === "Space" && stateDivContainer === true) {
         if (currentColor === "red") {
-            tempoClique = (Date.now() - tempoDaUltimaCor);
-            reacaoVermelho.push(tempoClique);
-            console.log(reacaoVermelho);
-            const media = calculateAverage(reacaoVermelho);//média de reação 
-            mediaVermelho = media;
+            tempoClique = (Date.now() - lastColorTime);
+            reactionRed.push(tempoClique);
+            const media = calculateAverage(reactionRed);//média de reação 
+            averageReactionTime = media;
             nextColor();
             console.log("Tempo de Reação: " + tempoClique);
         } else if (currentColor === "orange") {
-            reacaoAmarelo++;
-            console.log(reacaoAmarelo, reacaoBranco);
+            reactionOrange++;
+            console.log(reactionOrange, ReactionWhite);
         } else {
-            reacaoBranco++;
-            console.log(reacaoAmarelo, reacaoBranco);
+            ReactionWhite++;
+            console.log(reactionOrange, ReactionWhite);
         }
     }
 });
