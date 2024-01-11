@@ -74,7 +74,8 @@ function downloadCSV() {
         return;
     }
 
-    let csvContent = 'id,name,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
+    let csvContentWithoutName = 'id,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
+    let csvContentWithName = 'id,name,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
 
     let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort();
 
@@ -85,23 +86,29 @@ function downloadCSV() {
             let data = JSON.parse(testData);
 
             data.forEach(item => {
-                csvContent += Object.values(item).join(',') + '\n';
+                csvContentWithName += Object.values(item).join(',') + '\n';
+
+                csvContentWithoutName += `${item.id},${item.dose},${item.errorWhite},${item.errorOrange},${item.timeReaction},${item.mediaTimeReaction}\n`;
             });
         }
     });
 
-    let blob = new Blob([csvContent], { type: 'text/csv' });
+    downloadFileTest(csvContentWithName, `Teste com o nome do Usuário.csv`)
+    downloadFileTest(csvContentWithoutName, `Teste sem o nome do Usuário.csv`)
+}
+
+function downloadFileTest(content, fileName) {
+    let blob = new Blob([content], { type: 'text/csv' });
 
     let link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = 'todos_os_dados.csv';
+    link.download = fileName;
 
     document.body.appendChild(link);
     link.click();
 
     document.body.removeChild(link);
 }
-
 
 function exportData() {
     const btnExportData = document.querySelector('#btn-exportData');
@@ -174,7 +181,7 @@ function nextColor() {
 
 function calculateAverage(dataTime) {
     if (dataTime.length === 1) {
-        return dataTime[0]; 
+        return dataTime[0];
     }
 
     const totalReactionTime = dataTime.reduce(function (a, b) {
