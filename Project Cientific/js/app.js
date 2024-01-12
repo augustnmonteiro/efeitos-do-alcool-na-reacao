@@ -1,16 +1,24 @@
-let divContainer = document.querySelector('#container');
-let currentColor = "white";
-let lastColorTime = null;
-let reactionRed = [];
-let averageReactionTime = 0;
-let ReactionWhite = 0;
-let reactionOrange = 0;
-let endTime = null;
-let counter = localStorage.getItem("counter");
-let lastID = counter ? parseInt(counter) : 0;
-let stateDivContainer = false;
 let nameUser;
 let doseUser;
+let currentColor = "white";
+let reactionRed = [];
+let ReactionWhite = 0;
+let reactionOrange = 0;
+let averageReactionTime = 0;
+let endTime = null;
+let lastColorTime = null;
+let stateDivContainer = false;
+
+function start() {
+    endTime = Date.now() + (10 * 1000);
+    const name = document.querySelector('#username').value;
+    const dose = document.querySelector('#dose').value;
+    nameUser = name;
+    doseUser = dose;
+    document.querySelector("#content-download").style.display = 'none';
+    nameUser = nameUser.replace(/\s+$/, '');
+    verifyUser(nameUser, doseUser);
+}
 
 function createData() {
     let testData = JSON.parse(localStorage.getItem(`Testes_${nameUser}`) || "[]");
@@ -28,28 +36,7 @@ function createData() {
     localStorage.setItem(`Testes_${nameUser}`, JSON.stringify(testData));
 }
 
-function verifyDose() {
-    let testData = JSON.parse(localStorage.getItem(`Testes_${nameUser}`));
-    console.log(testData);
-    console.log(nameUser, doseUser);
-    if (testData) {
-        console.log("Verificação");
-        for (let i = 0; i < testData.length; i++) {
-            console.log(testData[i].dose);
-            if (testData[i].name === nameUser && testData[i].dose === doseUser) {
-                alert(`${testData[i].name}, você não pode repetir o teste da ${testData[i].dose}° dose. Tente Novamente!`);
-                return;
-            }
-        }
-    }
-    controllerElementsAndStyle();
-    nextColor();
-}
-
 function verifyUser(name, dose) {
-    console.log("To na verificação");
-    console.log("nome : " + name, "Dose : " + dose);
-
     name = name.replace(/\s/g, '');
 
     let verifyName = /^[a-zA-Z]+$/;
@@ -61,14 +48,96 @@ function verifyUser(name, dose) {
     }
 }
 
+function verifyDose() {
+    let testData = JSON.parse(localStorage.getItem(`Testes_${nameUser}`));
+
+    if (testData) {
+        console.log("Verificação");
+        for (const test of testData) {
+            console.log(test);
+
+            if (test.name === nameUser && test.dose === doseUser) {
+                alert(`${test.name}, você não pode repetir o teste da ${test.dose}° dose. Tente Novamente!`);
+                return;
+            }
+        }
+    }
+    controllerElementsAndStyle();
+    nextColor();
+}
+
+function controllerElementsAndStyle() {
+    let divContainer = document.querySelector('#container');
+    if (divContainer.style.display === "none") {
+        divContainer.style.display = "flex";
+        document.body.style.backgroundColor = "white";
+        stateDivContainer = false;
+        currentColor = "white";
+    } else {
+        divContainer.style.display = "none";
+        document.body.style.backgroundColor = "white";
+        currentColor = "White";
+        stateDivContainer = true;
+    }
+}
+
+function nextColor() {
+    if (endTime < Date.now()) {
+        finish();
+        return;
+    }
+
+    document.body.style.backgroundColor = "white";
+    lastColorTime = Date.now();
+
+    let drawnColor = Math.random();
+
+    setTimeout(() => {
+        if (drawnColor > 0.5) {
+            document.querySelector("body").style.backgroundColor = "red";
+            lastColorTime = Date.now();
+            currentColor = "red";
+        } else {
+            document.querySelector("body").style.backgroundColor = "orange";
+            lastColorTime = Date.now();
+            currentColor = "orange";
+
+            setTimeout(() => {
+                document.body.style.backgroundColor = "white";
+                currentColor = 'white';
+                nextColor();
+            }, 2000);
+        }
+    }, 2000);
+}
+
+function calculateAverage(dataTime) {
+    if (dataTime.length === 1) {
+        return dataTime[0];
+    }
+
+    const totalReactionTime = dataTime.reduce(function (a, b) {
+        return a + b;
+    }, 0);
+    const media = totalReactionTime / dataTime.length;
+    return media;
+}
+
+function finish() {
+    createData();
+    controllerElementsAndStyle();
+    reactionRed = [];
+    lastID++;
+    console.log("Finished");
+}
+
 function formatarArray(arr) {
     return arr.map(value => value.toString()).join(';');
 }
 
-function downloadCSV() {
+function generateCSV() {
     let allKeys = Object.keys(localStorage);
     allKeys.sort()
-    console.log("Lista Ordenada " + allKeys);
 
     if (allKeys.length === 0) {
         console.error('Nenhum dado encontrado no localStorage.');
@@ -115,82 +184,8 @@ function exportData() {
     const btnExportData = document.querySelector('#btn-exportData');
 
     btnExportData.addEventListener('click', () => {
-        downloadCSV()
+        generateCSV()
     })
-}
-
-function controllerElementsAndStyle() {
-    if (divContainer.style.display === "none") {
-        divContainer.style.display = "flex";
-        document.body.style.backgroundColor = "white";
-        stateDivContainer = false;
-        currentColor = "white";
-    } else {
-        divContainer.style.display = "none";
-        document.body.style.backgroundColor = "white";
-        currentColor = "White";
-        stateDivContainer = true;
-    }
-}
-function start() {
-    endTime = Date.now() + (10 * 1000);
-    const name = document.querySelector('#username').value;
-    const dose = document.querySelector('#dose').value;
-    nameUser = name;
-    doseUser = dose;
-    document.querySelector("#content-download").style.display = 'none';
-    nameUser = nameUser.replace(/\s+$/, '');
-    verifyUser(nameUser, doseUser);
-}
-
-function finish() {
-    createData();
-    controllerElementsAndStyle();
-    reactionRed = [];
-    lastID++;
-    console.log("Acabou");
-}
-
-function nextColor() {
-    if (endTime < Date.now()) {
-        finish();
-        return;
-    }
-
-    document.body.style.backgroundColor = "white";
-    lastColorTime = Date.now();
-
-    let drawnColor = Math.random();
-
-    setTimeout(() => {
-        if (drawnColor > 0.5) {
-            document.querySelector("body").style.backgroundColor = "red";
-            lastColorTime = Date.now();
-            currentColor = "red";
-        } else {
-            document.querySelector("body").style.backgroundColor = "orange";
-            lastColorTime = Date.now();
-            currentColor = "orange";
-
-            setTimeout(() => {
-                document.body.style.backgroundColor = "white";
-                currentColor = 'white';
-                nextColor();
-            }, 2000);
-        }
-    }, 2000);
-}
-
-function calculateAverage(dataTime) {
-    if (dataTime.length === 1) {
-        return dataTime[0];
-    }
-
-    const totalReactionTime = dataTime.reduce(function (a, b) {
-        return a + b;
-    }, 0);
-    const media = totalReactionTime / dataTime.length;
-    return media;
 }
 
 document.addEventListener("keydown", function (e) {
@@ -234,6 +229,6 @@ document.addEventListener("keydown", function (e) {
 
 exportData()
 document.querySelector("#toggleStart").addEventListener('click', () => {
-    console.log('Iniciei');
+    console.log('Start');
     start();
 });
