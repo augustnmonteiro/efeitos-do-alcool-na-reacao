@@ -127,7 +127,6 @@ function finish() {
     createData();
     controllerElementsAndStyle();
     reactionRed = [];
-    lastID++;
     console.log("Finished");
 }
 
