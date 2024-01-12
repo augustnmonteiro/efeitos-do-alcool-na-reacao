@@ -8,6 +8,8 @@ let averageReactionTime = 0;
 let endTime = null;
 let lastColorTime = null;
 let stateDivContainer = false;
+let stateTimer = false;
+let clearTimer;
 
 function start() {
     endTime = Date.now() + (10 * 1000);
@@ -82,6 +84,7 @@ function controllerElementsAndStyle() {
 }
 
 function nextColor() {
+    console.log("chamou");
     if (endTime < Date.now()) {
         finish();
         return;
@@ -92,7 +95,7 @@ function nextColor() {
 
     let drawnColor = Math.random();
 
-    setTimeout(() => {
+    clearTimer = setTimeout(() => {
         if (drawnColor > 0.5) {
             document.querySelector("body").style.backgroundColor = "red";
             lastColorTime = Date.now();
@@ -105,6 +108,7 @@ function nextColor() {
             setTimeout(() => {
                 document.body.style.backgroundColor = "white";
                 currentColor = 'white';
+                clearTimeout(clearTimer);
                 nextColor();
             }, 2000);
         }
