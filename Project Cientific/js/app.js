@@ -91,6 +91,7 @@ function nextColor() {
     }
 
     document.body.style.backgroundColor = "white";
+    currentColor = 'white'; 
     lastColorTime = Date.now();
 
     let drawnColor = Math.random();
@@ -194,12 +195,12 @@ function exportData() {
 document.addEventListener("keydown", function (e) {
     if (e.code === "Space" && stateDivContainer === true) {
         if (currentColor === "red") {
-            tempoClique = (Date.now() - lastColorTime);
-            reactionRed.push(tempoClique);
+            reactionTime = (Date.now() - lastColorTime);
+            reactionRed.push(reactionTime);
             const media = calculateAverage(reactionRed);
             averageReactionTime = media;
             nextColor();
-            console.log("Tempo de Reação: " + tempoClique);
+            console.log("Tempo de Reação: " + reactionTime);
         } else if (currentColor === "orange") {
             reactionOrange++;
             console.log(reactionOrange, ReactionWhite);
