@@ -7,7 +7,8 @@ const sharedVariables = {
     reactionOrange: 0,
     averageReactionTime: 0,
     lastColorTime: null,
-    stateDivContainer: false
+    stateDivContainer: false,
+    durationTest: (10 * 1000)
 };
 
 class Test {
@@ -18,7 +19,7 @@ class Test {
     }
 
     start() {
-        this.endTime = Date.now() + (10 * 1000);
+        this.endTime = Date.now() + sharedVariables.durationTest;
         const name = document.querySelector('#username').value;
         const dose = document.querySelector('#dose').value;
         sharedVariables.nameUser = name;
@@ -138,6 +139,7 @@ class Test {
 class Validations {
 
     verifyUser(name, dose) {
+        const divDataUsers = document.querySelector("#dataUsers");
         name = name.replace(/\s/g, '');
 
         let verifyName = /^[a-zA-Z]+$/;
@@ -145,7 +147,9 @@ class Validations {
         if (verifyName.test(name) && name != "" && dose != "") {
             verifications.verifyDose();
         } else {
-            alert("Preencha os Dados Corretamente para Iniciar o Teste");
+            if (!document.querySelector(".error-text")) {
+                this.createError( divDataUsers, "Preencha os Campos Corretamente...");
+            }
         }
     }
 
@@ -169,6 +173,18 @@ class Validations {
             alert(`Ocorreu um erro, tente novamente.`);
         }
     }
+
+    createError(campo, msg) {
+        const div = document.createElement('div');
+        div.innerHTML = msg;
+        div.classList.add('error-text');
+        campo.insertAdjacentElement('afterend', div);
+        
+        setTimeout(() => {
+            div.remove();
+        }, 5000);
+    }
+
 };
 
 class ManipuleCSV {

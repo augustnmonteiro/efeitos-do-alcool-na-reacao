@@ -41,7 +41,8 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: dimgrey;
+    background-color: #2b2b2b;
+    background-image: url(../src/background.png);
 }
 
 #dataUsers {
@@ -53,7 +54,7 @@ body {
 
 #username {
     width: 220px;
-    height: 25px;
+    height: 30px;
     padding: 1px 5px;
     background-color: rgb(78, 77, 77);
     border: 2px solid rgb(78, 77, 77);
@@ -63,7 +64,7 @@ body {
 
 #dose {
     width: 50px;
-    height: 25px;
+    height: 30px;
     padding: 1px 5px;
     background-color: rgb(78, 77, 77);
     border: 2px solid rgb(78, 77, 77);
@@ -81,4 +82,27 @@ body {
     border-style: none;
     cursor: pointer;
     margin-top: 20px;
+    font-size: 13px;
+    font-family: 'Outfit', sans-serif;
+    text-transform: uppercase;
+}
+
+#username::placeholder{
+    color: #fff;
+    opacity: 0.7;
+}
+
+#dose::placeholder{
+    color: #fff;
+    opacity: 0.7;
+}
+
+.error-text{
+    font-size: 15px;
+    color: #ff0000c2;
+    padding-left: 5px;
+    font-weight: 600;
+    position: absolute;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
 }
