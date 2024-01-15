@@ -7,14 +7,14 @@ body {
     background-color: dimgrey;
 }
 
-#content-download {
+#contentDownload {
     background-color: dimgrey;
     display: none;
     position: fixed;
     z-index: 10;
 }
 
-#btn-exportData {
+#btnExportData {
     width: 50px;
     height: 40px;
     margin-left: 1350px;
@@ -27,9 +27,11 @@ body {
 }
 
 #head {
-    margin-bottom: 90px;
+    margin-bottom: 50px;
     font-size: 70px;
     color: white;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 3px;
 }
 
 #container {
