@@ -136,6 +136,14 @@ class Test {
             nameInput.value = "";
             doseInput.value = "";
         }
+
+        manipuleElements.manipuleModalResults();
+
+        const results = document.querySelector("#resultsUsersModal").childNodes.length;
+    
+        if (results < 1) {
+            manipuleElements.showResultsModal();
+        }
     }
 };
 
@@ -244,7 +252,18 @@ class ManipuleElements {
         })
     }
 
-    manipuleModal() {
+    manipuleModalConfig() {
+        const divModal = document.querySelector('#divModalConfig');
+        divModal.classList.add('open');
+        
+        divModal.addEventListener('click', (e) => {
+            if (e.target.id === 'close' || e.target.id === 'divModal') {
+                divModal.classList.remove('open');
+            }
+        });
+    }
+    
+    manipuleModalResults() {
         const divModal = document.querySelector('#divModal');
         divModal.classList.add('open');
 
@@ -353,11 +372,15 @@ document.querySelector("#toggleStart").addEventListener('click', () => {
 });
 
 document.querySelector("#btnModal").addEventListener('click', () => {
-    manipuleElements.manipuleModal();
+    manipuleElements.manipuleModalResults();
     
     const results = document.querySelector("#resultsUsersModal").childNodes.length;
     
     if (results < 1) {
         manipuleElements.showResultsModal();
     }
+});
+
+document.querySelector("#btnConfig").addEventListener('click', () => {
+    manipuleElements.manipuleModalConfig();
 });
