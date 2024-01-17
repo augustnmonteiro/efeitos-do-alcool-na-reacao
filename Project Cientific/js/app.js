@@ -24,7 +24,6 @@ class Test {
         const dose = document.querySelector('#dose').value;
         sharedVariables.nameUser = name;
         sharedVariables.doseUser = dose;
-        document.querySelector("#contentDownload").style.display = 'none';
         sharedVariables.nameUser = sharedVariables.nameUser.replace(/\s+$/, '');
         verifications.verifyUser(sharedVariables.nameUser, sharedVariables.doseUser);
     }
@@ -48,6 +47,8 @@ class Test {
             });
 
             localStorage.setItem(`Testes_${sharedVariables.nameUser}`, JSON.stringify(testData));
+
+            localStorage.setItem('UltimoUsuario', `Testes_${sharedVariables.nameUser}`);
         } catch (error) {
             console.error("Ocorreu um error: ", error);
             alert(`Ocorreu um erro, tente novamente.`);
@@ -61,11 +62,13 @@ class Test {
             document.body.style.backgroundColor = "white";
             sharedVariables.stateDivContainer = false;
             sharedVariables.currentColor = "white";
+            document.querySelector('#contentElements').style.display = "flex";
         } else {
             divContainer.style.display = "none";
             document.body.style.backgroundColor = "white";
             sharedVariables.currentColor = "White";
             sharedVariables.stateDivContainer = true;
+            document.querySelector('#contentElements').style.display = "none";
         }
     }
 
@@ -148,7 +151,7 @@ class Validations {
             verifications.verifyDose();
         } else {
             if (!document.querySelector(".error-text")) {
-                this.createError( divDataUsers, "Preencha os Campos Corretamente...");
+                this.createError(divDataUsers, "Preencha os Campos Corretamente...");
             }
         }
     }
@@ -179,7 +182,7 @@ class Validations {
         div.innerHTML = msg;
         div.classList.add('error-text');
         campo.insertAdjacentElement('afterend', div);
-        
+
         setTimeout(() => {
             div.remove();
         }, 5000);
@@ -187,7 +190,7 @@ class Validations {
 
 };
 
-class ManipuleCSV {
+class ManipuleElements {
 
     generateCSV() {
         let allKeys = Object.keys(localStorage);
@@ -237,16 +240,93 @@ class ManipuleCSV {
     exportData() {
         const btnExportData = document.querySelector('#btnExportData');
         btnExportData.addEventListener('click', () => {
-            manipuleCSV.generateCSV();
+            manipuleElements.generateCSV();
         })
+    }
+
+    manipuleModal() {
+        const divModal = document.querySelector('#divModal');
+        divModal.classList.add('open');
+
+        divModal.addEventListener('click', (e) => {
+            if (e.target.id === 'close' || e.target.id === 'divModal') {
+                divModal.classList.remove('open');
+            }
+        });
+    }
+
+    showResultsModal() {
+        const lastUsers = localStorage.getItem('UltimoUsuario');
+        const resultsUser = localStorage.getItem(`${lastUsers}`);
+
+        console.log(lastUsers);
+        console.log(resultsUser);
+
+        let addedNames = new Set();
+        let Average = [];
+        let errorsOranged = [];
+        let errorsWhite = [];
+
+        //manipulando tempo de reação
+        let timeReaction = [];
+        let timeReactionTOTAL;
+
+
+        if (resultsUser) {
+            let resultsUserJSON = JSON.parse(resultsUser);
+
+            for (const i of resultsUserJSON) {
+                const name = i.name;
+                Average.push(i.mediaTimeReaction);
+                timeReactionTOTAL = timeReaction.concat(i.timeReaction);
+                errorsOranged.push(i.errorOrange);
+                errorsWhite.push(i.errorWhite);
+
+
+                if (!addedNames.has(name)) {
+                    this.createElement('p', `Nome: ${i.name}`);
+                    addedNames.add(name);
+                }
+            }
+        }
+
+        //Manipulando Media de Reação
+        let sumAverage = Average.reduce((soma, valor) => soma + valor, 0)
+        let generalAverage = sumAverage / Average.length;
+        
+        //Manipulando Erros
+        let sumErrorsOranged = errorsOranged.reduce((soma,valor) => soma + valor, 0);
+        let sumErrorsWhite = errorsWhite.reduce((soma,valor) => soma + valor, 0);
+
+        //Manipulando Tempo de Reação
+        let numbersTimesTotal = timeReactionTOTAL[0];
+        let stringTimesTotal = numbersTimesTotal.split(';');
+        let arrTimesTotal = stringTimesTotal.map(Number);
+
+        //Manipulando Tempo de Reação
+        let reactionFaster = Math.max(...arrTimesTotal); 
+        let reactionSlower = Math.min(...arrTimesTotal); 
+
+        this.createElement('p', `Média de Reação: ${generalAverage.toFixed(2)}`);
+        this.createElement('p', `Reação mais Rápida: ${reactionFaster}`);
+        this.createElement('p', `Reação mais Lenta: ${reactionSlower}`);
+        this.createElement('p', `Erros no Laranja: ${sumErrorsOranged}`);
+        this.createElement('p', `Erros no Branco: ${sumErrorsWhite}`);
+    }
+
+    createElement(el, msg) {
+        const element = document.createElement(`${el}`);
+        element.textContent = msg;
+        element.classList.add(`${el}ModalResults`);
+        document.querySelector('#resultsUsersModal').appendChild(element);
     }
 };
 
 const test = new Test();
 const verifications = new Validations();
-const manipuleCSV = new ManipuleCSV();
+const manipuleElements = new ManipuleElements();
 
-manipuleCSV.exportData();
+manipuleElements.exportData();
 
 document.addEventListener("keydown", function (e) {
     if (e.code === "Space" && sharedVariables.stateDivContainer === true) {
@@ -267,26 +347,17 @@ document.addEventListener("keydown", function (e) {
     }
 });
 
-document.addEventListener("keydown", function (e) {
-    let contentBtnDownload = document.querySelector("#contentDownload");
-    let stateContentDownload = false;
-
-    if (contentBtnDownload.style.display === 'block') {
-        stateContentDownload = true;
-    } else {
-        stateContentDownload = false;
-    }
-
-    if (e.code === "Space" && e.ctrlKey) {
-        if (stateContentDownload === true) {
-            contentBtnDownload.style.display = "none";
-        } else {
-            contentBtnDownload.style.display = "block";
-        }
-    }
-});
-
 document.querySelector("#toggleStart").addEventListener('click', () => {
     console.log('Start');
     test.start();
+});
+
+document.querySelector("#btnModal").addEventListener('click', () => {
+    manipuleElements.manipuleModal();
+    
+    const results = document.querySelector("#resultsUsersModal").childNodes.length;
+    
+    if (results < 1) {
+        manipuleElements.showResultsModal();
+    }
 });
