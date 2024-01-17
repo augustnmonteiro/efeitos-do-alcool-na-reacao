@@ -122,9 +122,9 @@ body {
 }
 
 #modalResults {
-    width: 40%;
-    min-width: 400px;
-    min-height: 400px;
+    width: 25%;
+    min-width: 300px;
+    min-height: 330px;
     background-color: #2b2b2b;
     backdrop-filter: blur(30px);
     padding: 50px;
@@ -180,9 +180,10 @@ body {
 
 .pModalResults {
     color: #fff;
-    margin-top: 20px;
+    margin-top: 5px;
     font-family: 'Outfit';
     font-size: 18px;
+    text-align: center;
 }
 
 #btnModal {
@@ -194,3 +195,11 @@ body {
     color: #fff;
     background-color: rgba(60, 40, 40, 0);
 }
+
+#headerModal {
+    color: #fff;
+    /* margin-top: -40px; */
+    margin-bottom: 20px;
+    font-family: 'Outfit';
+    font-size: 47px;
+};
