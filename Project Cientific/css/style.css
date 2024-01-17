@@ -226,6 +226,7 @@ body {
     color: #fff;
     background-color: rgba(60, 40, 40, 0);
 }
+
 #btnConfig {
     width: 50px;
     height: 30px;
@@ -241,11 +242,12 @@ body {
     margin-bottom: 20px;
     font-family: 'Outfit';
     font-size: 47px;
-};
+}
 
 #headerConfig {
     color: #fff;
     margin-bottom: 20px;
     font-family: 'Outfit';
     font-size: 47px;
-};
+}
+

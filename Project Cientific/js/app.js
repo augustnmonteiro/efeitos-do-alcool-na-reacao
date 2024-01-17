@@ -42,11 +42,13 @@ class Test {
                 dose: sharedVariables.doseUser,
                 errorWhite: sharedVariables.ReactionWhite,
                 errorOrange: sharedVariables.reactionOrange,
-                timeReaction: this.formatArray(sharedVariables.reactionRed),
+                timeReaction: sharedVariables.reactionRed,
                 mediaTimeReaction: parseFloat(sharedVariables.averageReactionTime.toFixed(2))
             });
 
             localStorage.setItem(`Testes_${sharedVariables.nameUser}`, JSON.stringify(testData));
+
+            console.log(`Testes_${sharedVariables.nameUser}`);
 
             localStorage.setItem('UltimoUsuario', `Testes_${sharedVariables.nameUser}`);
         } catch (error) {
@@ -139,9 +141,12 @@ class Test {
 
         manipuleElements.manipuleModalResults();
 
-        const results = document.querySelector("#resultsUsersModal").childNodes.length;
-    
-        if (results < 1) {
+        const results = document.querySelector("#resultsUsersModal");
+
+        if (results.childNodes.length < 1) {
+            manipuleElements.showResultsModal();
+        } else {
+            results.innerHTML = '';
             manipuleElements.showResultsModal();
         }
     }
@@ -169,7 +174,6 @@ class Validations {
             let testData = JSON.parse(localStorage.getItem(`Testes_${sharedVariables.nameUser}`));
 
             if (testData) {
-                console.log("Verificação");
                 for (const test of testData) {
                     if (test.name === sharedVariables.nameUser && test.dose === sharedVariables.doseUser) {
                         alert(`${test.name}, você não pode repetir o teste da ${test.dose}° dose. Tente Novamente!`);
@@ -202,35 +206,45 @@ class ManipuleElements {
 
     generateCSV() {
         let allKeys = Object.keys(localStorage);
-        allKeys.sort()
-
+        allKeys.sort();
+    
         if (allKeys.length === 0) {
             console.error('Nenhum dado encontrado no localStorage.');
             return;
         }
-
+    
         let csvContentWithoutName = 'id,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
         let csvContentWithName = 'id,name,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
-
-        // let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort();
+    
         let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort((a, b) => a.localeCompare(b));
-
-
+    
         sortedKeys.forEach(key => {
             let testData = localStorage.getItem(key);
-
+    
             if (testData) {
                 let data = JSON.parse(testData);
-
+    
                 data.forEach(item => {
-                    csvContentWithName += Object.values(item).join(',') + '\n';
-                    csvContentWithoutName += `${item.id},${item.dose},${item.errorWhite},${item.errorOrange},${item.timeReaction},${item.mediaTimeReaction}\n`;
+                    // Convertendo apenas o campo timeReaction para string separada por ponto e vírgula
+                    const timeReactionString = Array.isArray(item.timeReaction) ? item.timeReaction.join(';') : item.timeReaction;
+    
+                    // Adicionando uma nova linha ao CSV com campos na ordem correta
+                    const csvLine = `${item.id},${item.name || ''},${item.dose || ''},${item.errorWhite || '0'},${item.errorOrange || '0'},${timeReactionString || ''},${item.mediaTimeReaction || '0'}\n`;
+    
+                    if (item.name) {
+                        csvContentWithName += csvLine;
+                    } else {
+                        csvContentWithoutName += csvLine;
+                    }
                 });
             }
         });
-        this.downloadFileTest(csvContentWithName, `Teste com o nome do Usuário.csv`)
-        this.downloadFileTest(csvContentWithoutName, `Teste sem o nome do Usuário.csv`)
+    
+        this.downloadFileTest(csvContentWithName, `Teste com o nome do Usuário.csv`);
+        this.downloadFileTest(csvContentWithoutName, `Teste sem o nome do Usuário.csv`);
     }
+    
+     
 
     downloadFileTest(content, fileName) {
         let blob = new Blob([content], { type: 'text/csv' });
@@ -255,14 +269,14 @@ class ManipuleElements {
     manipuleModalConfig() {
         const divModal = document.querySelector('#divModalConfig');
         divModal.classList.add('open');
-        
+
         divModal.addEventListener('click', (e) => {
             if (e.target.id === 'close' || e.target.id === 'divModal') {
                 divModal.classList.remove('open');
             }
         });
     }
-    
+
     manipuleModalResults() {
         const divModal = document.querySelector('#divModal');
         divModal.classList.add('open');
@@ -276,59 +290,61 @@ class ManipuleElements {
 
     showResultsModal() {
         const lastUsers = localStorage.getItem('UltimoUsuario');
-        const resultsUser = localStorage.getItem(`${lastUsers}`);
+        const resultsUser = localStorage.getItem(lastUsers);
 
         console.log(lastUsers);
         console.log(resultsUser);
+
+        if (!resultsUser) {
+            console.error("Erro: Dados do usuário não encontrados.");
+            return;
+        }
 
         let addedNames = new Set();
         let Average = [];
         let errorsOranged = [];
         let errorsWhite = [];
+        let timeReactionTOTAL = [];
 
-        //manipulando tempo de reação
-        let timeReaction = [];
-        let timeReactionTOTAL;
+        for (const i of JSON.parse(resultsUser)) {
+            const name = i.name;
+            Average.push(i.mediaTimeReaction);
+            timeReactionTOTAL = timeReactionTOTAL.concat(i.timeReaction);
+            errorsOranged.push(i.errorOrange);
+            errorsWhite.push(i.errorWhite);
 
-
-        if (resultsUser) {
-            let resultsUserJSON = JSON.parse(resultsUser);
-
-            for (const i of resultsUserJSON) {
-                const name = i.name;
-                Average.push(i.mediaTimeReaction);
-                timeReactionTOTAL = timeReaction.concat(i.timeReaction);
-                errorsOranged.push(i.errorOrange);
-                errorsWhite.push(i.errorWhite);
-
-
-                if (!addedNames.has(name)) {
-                    this.createElement('p', `Nome: ${i.name}`);
-                    addedNames.add(name);
-                }
+            if (!addedNames.has(name)) {
+                this.createElement('p', `Nome: ${i.name}`);
+                addedNames.add(name);
             }
         }
 
-        //Manipulando Media de Reação
-        let sumAverage = Average.reduce((soma, valor) => soma + valor, 0)
+        // Manipulando Média de Reação
+        let sumAverage = Average.reduce((soma, valor) => soma + valor, 0);
         let generalAverage = sumAverage / Average.length;
-        
-        //Manipulando Erros
-        let sumErrorsOranged = errorsOranged.reduce((soma,valor) => soma + valor, 0);
-        let sumErrorsWhite = errorsWhite.reduce((soma,valor) => soma + valor, 0);
 
-        //Manipulando Tempo de Reação
-        let numbersTimesTotal = timeReactionTOTAL[0];
-        let stringTimesTotal = numbersTimesTotal.split(';');
-        let arrTimesTotal = stringTimesTotal.map(Number);
+        // Manipulando Erros
+        let sumErrorsOranged = errorsOranged.reduce((soma, valor) => soma + valor, 0);
+        let sumErrorsWhite = errorsWhite.reduce((soma, valor) => soma + valor, 0);
 
-        //Manipulando Tempo de Reação
-        let reactionFaster = Math.max(...arrTimesTotal); 
-        let reactionSlower = Math.min(...arrTimesTotal); 
+        // Manipulando Tempo de Reação
+        let arrTimesTotal = timeReactionTOTAL.map(Number);
+
+        // Manipulando Tempo de Reação
+        let reactionFaster = NaN;
+        let reactionSlower = NaN;
+
+        if (arrTimesTotal.length > 0) {
+            reactionFaster = Math.max(...arrTimesTotal);
+            reactionSlower = Math.min(...arrTimesTotal);
+        }
+
+        console.log("Reação mais Rápida", reactionFaster);
+        console.log("Reação mais Lenta", reactionSlower);
 
         this.createElement('p', `Média de Reação: ${generalAverage.toFixed(2)}`);
-        this.createElement('p', `Reação mais Rápida: ${reactionFaster}`);
-        this.createElement('p', `Reação mais Lenta: ${reactionSlower}`);
+        this.createElement('p', `Reação mais Rápida: ${isNaN(reactionFaster) ? 'N/A' : reactionFaster}`);
+        this.createElement('p', `Reação mais Lenta: ${isNaN(reactionSlower) ? 'N/A' : reactionSlower}`);
         this.createElement('p', `Erros no Laranja: ${sumErrorsOranged}`);
         this.createElement('p', `Erros no Branco: ${sumErrorsWhite}`);
     }
@@ -373,10 +389,13 @@ document.querySelector("#toggleStart").addEventListener('click', () => {
 
 document.querySelector("#btnModal").addEventListener('click', () => {
     manipuleElements.manipuleModalResults();
-    
-    const results = document.querySelector("#resultsUsersModal").childNodes.length;
-    
-    if (results < 1) {
+
+    const results = document.querySelector("#resultsUsersModal");
+
+    if (results.childNodes.length < 1) {
+        manipuleElements.showResultsModal();
+    } else {
+        results.innerHTML = '';
         manipuleElements.showResultsModal();
     }
 });
