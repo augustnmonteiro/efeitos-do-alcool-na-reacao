@@ -139,6 +139,7 @@ class Test {
             doseInput.value = "";
         }
 
+        //Comenatar esse trecho de código abaixo para não mostrar o resultado após o fim do teste
         manipuleElements.manipuleModalResults();
 
         const results = document.querySelector("#resultsUsersModal");
@@ -225,10 +226,8 @@ class ManipuleElements {
                 let data = JSON.parse(testData);
     
                 data.forEach(item => {
-                    // Convertendo apenas o campo timeReaction para string separada por ponto e vírgula
                     const timeReactionString = Array.isArray(item.timeReaction) ? item.timeReaction.join(';') : item.timeReaction;
     
-                    // Adicionando uma nova linha ao CSV com campos na ordem correta
                     const csvLine = `${item.id},${item.name || ''},${item.dose || ''},${item.errorWhite || '0'},${item.errorOrange || '0'},${timeReactionString || ''},${item.mediaTimeReaction || '0'}\n`;
     
                     if (item.name) {
