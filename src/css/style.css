@@ -42,7 +42,7 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #2b2b2b;
-    background-image: url(../src/background.png);
+    background-image: url(../../assets/img/background.png);
     z-index: 1;
 }
 
@@ -226,6 +226,7 @@ body {
     color: #fff;
     background-color: rgba(60, 40, 40, 0);
 }
+
 #btnConfig {
     width: 50px;
     height: 30px;
@@ -244,58 +245,9 @@ body {
 }
 
 #headerConfig {
-    margin-bottom: 50px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-family: 'Outfit';
     font-size: 47px;
-    color: white;
-    font-family: 'Outfit', sans-serif;
-    letter-spacing: 3px;
 }
 
-#inputConfigTime {
-    width: 187px;
-    height: 30px;
-    margin-left: 100px;
-    padding: 1px 5px;
-    background-color: rgb(78, 77, 77);
-    border: 2px solid rgb(78, 77, 77);
-    border-color: none;
-    color: #fff;
-}
-#sendConfigTime {
-    width: 200px;
-    height: 35px;
-    margin-left: 100px;
-    padding: 2px 0px;
-    background-color: rgb(75, 76, 76);
-    color: rgb(255, 255, 255);
-    border: none;
-    cursor: pointer;
-    margin-top: 20px;
-    font-size: 13px;
-    font-family: Outfit, sans-serif;
-    text-transform: uppercase;
-}
-
-#labelConfig p{
-    color: #fff;
-    margin-left: -12px;
-    margin-bottom: 8px;
-    font-family: 'Outfit';
-    font-size: 12px;
-    text-align: center;
-}
-
-#msgErroConfig p{
-    margin-left: 95px;
-    color: #fe0505;
-    margin-left: 100px;
-    font-family: 'Outfit';
-    font-size: 12px;
-}
-
-#msgSucessConfig p{
-    color: #05fe1e;
-    margin-left: 100px;
-    font-family: 'Outfit';
-    font-size: 12px;
-}
