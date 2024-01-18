@@ -42,7 +42,7 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #2b2b2b;
-    background-image: url(../src/background.png);
+    background-image: url(../../assets/img/background.png);
     z-index: 1;
 }
 
