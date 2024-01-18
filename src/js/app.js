@@ -399,6 +399,7 @@ document.querySelector("#btnConfig").addEventListener('click', () => {
 
 document.querySelector('#sendConfigTime').addEventListener('click', () => {
     let inputConfigTime = document.querySelector('#inputConfigTime');
+    const modalConfig = document.querySelector('#divModalConfig');
     if(inputConfigTime.value > 0) {
         const timeInSeconds = parseFloat(inputConfigTime.value);
         let msgSucessConfig = document.querySelector('#msgSucessConfig');
