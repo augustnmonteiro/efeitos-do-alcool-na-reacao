@@ -28,6 +28,14 @@ class Test {
         verifications.verifyUser(sharedVariables.nameUser, sharedVariables.doseUser);
     }
 
+    setDuration(timeInSeconds) {
+        if (!isNaN(timeInSeconds) && timeInSeconds > 0) {
+            sharedVariables.durationTest = timeInSeconds * 1000;
+        } else {
+            console.log(timeInSeconds + "Dados válido")
+        }
+    }
+
     formatArray(arr) {
         return arr.map(value => value.toString()).join(';');
     }
@@ -383,4 +391,26 @@ document.querySelector("#btnModal").addEventListener('click', () => {
 
 document.querySelector("#btnConfig").addEventListener('click', () => {
     manipuleElements.manipuleModalConfig();
+});
+
+document.querySelector('#sendConfigTime').addEventListener('click', () => {
+    let inputConfigTime = document.querySelector('#inputConfigTime');
+    if(inputConfigTime.value > 0) {
+        const timeInSeconds = parseFloat(inputConfigTime.value);
+        let msgSucessConfig = document.querySelector('#msgSucessConfig');
+        test.setDuration(timeInSeconds)
+        msgSucessConfig.style.display = 'block';
+        inputConfigTime.value = '';
+        setTimeout(() => {
+            msgSucessConfig.style.display = 'none';
+        }, 4000)
+    } else {
+        let msgErroConfig = document.querySelector('#msgErroConfig');
+        msgErroConfig.style.display = 'block';
+        
+        setTimeout(() => {
+            msgErroConfig.style.display = 'none';
+        }, 4000)
+        console.log(`Tempo Inválido`)
+    }
 });
