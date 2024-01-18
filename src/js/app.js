@@ -48,11 +48,9 @@ class Test {
 
             localStorage.setItem(`Testes_${sharedVariables.nameUser}`, JSON.stringify(testData));
 
-            console.log(`Testes_${sharedVariables.nameUser}`);
-
             localStorage.setItem('UltimoUsuario', `Testes_${sharedVariables.nameUser}`);
         } catch (error) {
-            console.error("Ocorreu um error: ", error);
+            console.error("Ocorreu um erro: ", error);
             alert(`Ocorreu um erro, tente novamente.`);
         }
     }
@@ -75,7 +73,6 @@ class Test {
     }
 
     nextColor() {
-        console.log("chamou");
         if (this.endTime < Date.now()) {
             test.finish();
             return;
@@ -107,7 +104,7 @@ class Test {
                 }
             }, 2000);
         } catch (error) {
-            console.error("Ocorreu um error: ", error);
+            console.error("Ocorreu um erro: ", error);
             alert(`Ocorreu um erro, tente novamente.`);
         }
 
@@ -129,7 +126,6 @@ class Test {
         test.createData();
         test.controllerElementsAndStyle();
         sharedVariables.reactionRed = [];
-        console.log("Finished");
 
         const nameInput = document.querySelector("#username");
         const doseInput = document.querySelector('#dose');
@@ -139,7 +135,7 @@ class Test {
             doseInput.value = "";
         }
 
-        //Comenatar esse trecho de código abaixo para não mostrar o resultado após o fim do teste
+        //Comentar esse trecho de código abaixo para não mostrar o resultado após o fim do teste
         manipuleElements.manipuleModalResults();
 
         const results = document.querySelector("#resultsUsersModal");
@@ -291,9 +287,6 @@ class ManipuleElements {
         const lastUsers = localStorage.getItem('UltimoUsuario');
         const resultsUser = localStorage.getItem(lastUsers);
 
-        console.log(lastUsers);
-        console.log(resultsUser);
-
         if (!resultsUser) {
             console.error("Erro: Dados do usuário não encontrados.");
             return;
@@ -338,9 +331,6 @@ class ManipuleElements {
             reactionSlower = Math.min(...arrTimesTotal);
         }
 
-        console.log("Reação mais Rápida", reactionFaster);
-        console.log("Reação mais Lenta", reactionSlower);
-
         this.createElement('p', `Média de Reação: ${generalAverage.toFixed(2)}`);
         this.createElement('p', `Reação mais Rápida: ${isNaN(reactionFaster) ? 'N/A' : reactionFaster}`);
         this.createElement('p', `Reação mais Lenta: ${isNaN(reactionSlower) ? 'N/A' : reactionSlower}`);
@@ -370,19 +360,15 @@ document.addEventListener("keydown", function (e) {
             const media = test.calculateAverage(sharedVariables.reactionRed);
             sharedVariables.averageReactionTime = media;
             test.nextColor();
-            console.log("Tempo de Reação: " + reactionTime);
         } else if (sharedVariables.currentColor === "orange") {
             sharedVariables.reactionOrange++;
-            console.log(sharedVariables.reactionOrange, sharedVariables.ReactionWhite);
         } else {
             sharedVariables.ReactionWhite++;
-            console.log(sharedVariables.reactionOrange, sharedVariables.ReactionWhite);
         }
     }
 });
 
 document.querySelector("#toggleStart").addEventListener('click', () => {
-    console.log('Start');
     test.start();
 });
 
