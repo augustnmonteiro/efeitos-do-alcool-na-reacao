@@ -335,8 +335,8 @@ class ManipuleElements {
         let reactionSlower = NaN;
 
         if (arrTimesTotal.length > 0) {
-            reactionFaster = Math.max(...arrTimesTotal);
-            reactionSlower = Math.min(...arrTimesTotal);
+            reactionFaster = Math.min(...arrTimesTotal);
+            reactionSlower = Math.max(...arrTimesTotal);
         }
 
         this.createElement('p', `Média de Reação: ${generalAverage.toFixed(2)}`);
