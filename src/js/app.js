@@ -8,7 +8,7 @@ const sharedVariables = {
     averageReactionTime: 0,
     lastColorTime: null,
     stateDivContainer: false,
-    durationTest: (10 * 1000)
+    durationTest: (60 * 1000)
 };
 
 class Test {
@@ -272,7 +272,7 @@ class ManipuleElements {
     manipuleModalConfig() {
         const divModal = document.querySelector('#divModalConfig');
         divModal.classList.add('open');
-
+        document.querySelector('#inputConfigTime').value = sharedVariables.durationTest / 1000;
         divModal.addEventListener('click', (e) => {
             if (e.target.id === 'close' || e.target.id === 'divModal') {
                 divModal.classList.remove('open');
@@ -399,23 +399,24 @@ document.querySelector("#btnConfig").addEventListener('click', () => {
 
 document.querySelector('#sendConfigTime').addEventListener('click', () => {
     let inputConfigTime = document.querySelector('#inputConfigTime');
-    const modalConfig = document.querySelector('#divModalConfig');
+
     if(inputConfigTime.value > 0) {
         const timeInSeconds = parseFloat(inputConfigTime.value);
         let msgSucessConfig = document.querySelector('#msgSucessConfig');
         test.setDuration(timeInSeconds)
+        
         msgSucessConfig.style.display = 'block';
-        inputConfigTime.value = '';
+        
         setTimeout(() => {
             msgSucessConfig.style.display = 'none';
         }, 4000)
     } else {
         let msgErroConfig = document.querySelector('#msgErroConfig');
+        
         msgErroConfig.style.display = 'block';
         
         setTimeout(() => {
             msgErroConfig.style.display = 'none';
         }, 4000)
-        console.log(`Tempo Inválido`)
     }
 });
