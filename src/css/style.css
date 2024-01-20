@@ -217,7 +217,7 @@ body {
     text-align: center;
 }
 
-#btnModal {
+#btnResults {
     width: 70px;
     height: 30px;
     border: none;
@@ -237,13 +237,12 @@ body {
     background-color: rgba(60, 40, 40, 0);
 }
 
-#headerModal {
+#headerResults {
     color: #fff;
     margin-bottom: 20px;
     font-family: 'Outfit';
     font-size: 47px;
 }
-
 
 #headerConfig {
     margin-bottom: 50px;
@@ -256,17 +255,18 @@ body {
 #inputConfigTime {
     width: 187px;
     height: 30px;
-    margin-left: 100px;
+    margin-left: 92px;
     padding: 1px 5px;
     background-color: rgb(78, 77, 77);
     border: 2px solid rgb(78, 77, 77);
     border-color: none;
     color: #fff;
 }
+
 #sendConfigTime {
     width: 200px;
     height: 35px;
-    margin-left: 100px;
+    margin-left: 92px;
     padding: 2px 0px;
     background-color: rgb(75, 76, 76);
     color: rgb(255, 255, 255);
@@ -280,7 +280,7 @@ body {
 
 #labelConfig p{
     color: #fff;
-    margin-left: -12px;
+    margin-left: -18px;
     margin-bottom: 8px;
     font-family: 'Outfit';
     font-size: 12px;
@@ -302,3 +302,30 @@ body {
     font-size: 12px;
 }
 
+#clearResults {
+        width: 200px;
+        height: 35px;
+        padding: 2px 0px;
+        background-color: rgb(75, 76, 76);
+        color: rgb(255, 255, 255);
+        border: none;
+        cursor: pointer;
+        margin-top: 70px;
+        font-size: 13px;
+        font-family: Outfit, sans-serif;
+}
+
+.h1ModalResults {
+    color: #fff;
+    margin-bottom: 20px;
+    font-family: 'Outfit';
+    font-size: 36px;
+    text-align: center;
+}
+
+#msgHistorySucessConfig {
+    color: #05fe1e;
+    font-family: 'Outfit';
+    font-size: 12px;
+    margin-left: 8px;
+}
