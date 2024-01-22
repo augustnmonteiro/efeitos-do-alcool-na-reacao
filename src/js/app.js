@@ -208,55 +208,59 @@ class ManipuleElements {
     generateCSV() {
         let allKeys = Object.keys(localStorage);
         allKeys.sort();
-    
+
         if (allKeys.length === 0) {
             alert('Não Existem Dados para Serem Exportados pois Você Ainda não Realizou Nenhum Teste...');
             console.error('Nenhum dado encontrado.');
             return;
         }
-    
-        let csvContentWithoutName = 'id,dose,errorWhite,errorOrange,timeReaction,avgTimeReaction\n';
-        let csvContentWithName = 'id,name,dose,errorWhite,errorOrange,timeReaction,avgTimeReaction\n';
-    
+
+        let csvContentWithName = 'id;name;dose;errorWhite;errorOrange;timeReaction;avgTimeReaction\n';
+        let csvContentWithoutName = 'id;dose;errorWhite;errorOrange;timeReaction;avgTimeReaction\n';
+
         let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort((a, b) => a.localeCompare(b));
-    
+
         sortedKeys.forEach(key => {
             let testData = localStorage.getItem(key);
-    
+
             if (testData) {
                 let data = JSON.parse(testData);
-    
+
                 data.forEach(item => {
-                    const timeReactionString = Array.isArray(item.timeReaction) ? item.timeReaction.join(';') : item.timeReaction;
-    
-                    const csvLine = `${item.id},${item.name || ''},${item.dose || ''},${item.errorWhite || '0'},${item.errorOrange || '0'},${timeReactionString || ''},${item.avgTimeReaction || '0'}\n`;
-    
-                    if (item.name) {
-                        csvContentWithName += csvLine;
-                    } else {
-                        csvContentWithoutName += csvLine;
-                    }
+                    // const timeReactionString = Array.isArray(item.timeReaction) ? item.timeReaction.join(',') : item.timeReaction;
+                    console.log(item.timeReaction.join(','));
+
+                    const csvWithNameLine = [
+                        item.id, item.name, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
+                    ].join(';') + '\n';
+                    
+                    const csvWithoutNameLine = [
+                        item.id, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
+                    ].join(';') + '\n';
+
+                    csvContentWithName += csvWithNameLine;
+                    csvContentWithoutName += csvWithoutNameLine;
                 });
             }
         });
-    
+
         this.downloadFileTest(csvContentWithName, `Teste com o nome do Usuário.csv`);
         this.downloadFileTest(csvContentWithoutName, `Teste sem o nome do Usuário.csv`);
     }
-    
-     
 
     downloadFileTest(content, fileName) {
-        let blob = new Blob([content], { type: 'text/csv' });
+        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
 
-        let link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = fileName;
-
-        document.body.appendChild(link);
-        link.click();
-
-        document.body.removeChild(link);
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     }
 
     exportData() {
@@ -352,7 +356,7 @@ class ManipuleElements {
         document.querySelector('#resultsUsersModal').appendChild(element);
     }
 
-    clearHistoryResults () {
+    clearHistoryResults() {
         document.querySelector('#msgHistorySucessConfig').style.display = 'block';
         setTimeout(() => {
             document.querySelector('#msgHistorySucessConfig').style.display = 'none';
@@ -407,21 +411,21 @@ document.querySelector("#btnConfig").addEventListener('click', () => {
 document.querySelector('#sendConfigTime').addEventListener('click', () => {
     let inputConfigTime = document.querySelector('#inputConfigTime');
 
-    if(inputConfigTime.value > 0) {
+    if (inputConfigTime.value > 0) {
         const timeInSeconds = parseFloat(inputConfigTime.value);
         let msgSucessConfig = document.querySelector('#msgSucessConfig');
         test.setDuration(timeInSeconds)
-        
+
         msgSucessConfig.style.display = 'block';
-        
+
         setTimeout(() => {
             msgSucessConfig.style.display = 'none';
         }, 4000)
     } else {
         let msgErroConfig = document.querySelector('#msgErroConfig');
-        
+
         msgErroConfig.style.display = 'block';
-        
+
         setTimeout(() => {
             msgErroConfig.style.display = 'none';
         }, 4000)
