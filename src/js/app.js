@@ -51,7 +51,7 @@ class Test {
                 errorWhite: sharedVariables.ReactionWhite,
                 errorOrange: sharedVariables.reactionOrange,
                 timeReaction: sharedVariables.reactionRed,
-                mediaTimeReaction: parseFloat(sharedVariables.averageReactionTime.toFixed(2))
+                avgTimeReaction: parseFloat(sharedVariables.averageReactionTime.toFixed(2))
             });
 
             localStorage.setItem(`Testes_${sharedVariables.nameUser}`, JSON.stringify(testData));
@@ -94,7 +94,7 @@ class Test {
 
         try {
             this.clearTimer = setTimeout(() => {
-                if (drawnColor > 0.5) {
+                if (drawnColor > 0.25) {
                     document.querySelector("body").style.backgroundColor = "red";
                     sharedVariables.lastColorTime = Date.now();
                     sharedVariables.currentColor = "red";
@@ -126,8 +126,8 @@ class Test {
         const totalReactionTime = dataTime.reduce(function (a, b) {
             return a + b;
         }, 0);
-        const media = totalReactionTime / dataTime.length;
-        return media;
+        const avg = totalReactionTime / dataTime.length;
+        return avg;
     }
 
     finish() {
@@ -218,8 +218,8 @@ class ManipuleElements {
             return;
         }
     
-        let csvContentWithoutName = 'id,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
-        let csvContentWithName = 'id,name,dose,errorWhite,errorOrange,timeReaction,mediaTimeReaction\n';
+        let csvContentWithoutName = 'id,dose,errorWhite,errorOrange,timeReaction,avgTimeReaction\n';
+        let csvContentWithName = 'id,name,dose,errorWhite,errorOrange,timeReaction,avgTimeReaction\n';
     
         let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort((a, b) => a.localeCompare(b));
     
@@ -232,7 +232,7 @@ class ManipuleElements {
                 data.forEach(item => {
                     const timeReactionString = Array.isArray(item.timeReaction) ? item.timeReaction.join(';') : item.timeReaction;
     
-                    const csvLine = `${item.id},${item.name || ''},${item.dose || ''},${item.errorWhite || '0'},${item.errorOrange || '0'},${timeReactionString || ''},${item.mediaTimeReaction || '0'}\n`;
+                    const csvLine = `${item.id},${item.name || ''},${item.dose || ''},${item.errorWhite || '0'},${item.errorOrange || '0'},${timeReactionString || ''},${item.avgTimeReaction || '0'}\n`;
     
                     if (item.name) {
                         csvContentWithName += csvLine;
@@ -308,7 +308,7 @@ class ManipuleElements {
 
         for (const i of JSON.parse(resultsUser)) {
             const name = i.name;
-            Average.push(i.mediaTimeReaction);
+            Average.push(i.avgTimeReaction);
             timeReactionTOTAL = timeReactionTOTAL.concat(i.timeReaction);
             errorsOranged.push(i.errorOrange);
             errorsWhite.push(i.errorWhite);
@@ -365,8 +365,8 @@ document.addEventListener("keydown", function (e) {
         if (sharedVariables.currentColor === "red") {
             reactionTime = (Date.now() - sharedVariables.lastColorTime);
             sharedVariables.reactionRed.push(reactionTime);
-            const media = test.calculateAverage(sharedVariables.reactionRed);
-            sharedVariables.averageReactionTime = media;
+            const avg = test.calculateAverage(sharedVariables.reactionRed);
+            sharedVariables.averageReactionTime = avg;
             test.nextColor();
         } else if (sharedVariables.currentColor === "orange") {
             sharedVariables.reactionOrange++;
