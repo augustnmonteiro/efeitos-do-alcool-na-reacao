@@ -1,6 +1,6 @@
 * {
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
 }
 
 body {
@@ -253,13 +253,14 @@ body {
 }
 
 #inputConfigTime {
-    width: 187px;
-    height: 30px;
-    padding: 1px 5px;
+    width: 200px;
+    height: 35px;
     background-color: rgb(78, 77, 77);
-    border: 2px solid rgb(78, 77, 77);
+    border: 1px solid rgb(78, 77, 77);
     border-color: none;
     color: #fff;
+    box-sizing: border-box;
+    padding-left: 2px;
 }
 #InputsModalConfig {
     width: 100%;
