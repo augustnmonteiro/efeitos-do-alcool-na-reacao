@@ -36,10 +36,6 @@ class Test {
         }
     }
 
-    formatArray(arr) {
-        return arr.map(value => value.toString()).join(';');
-    }
-
     createData() {
         try {
             let testData = JSON.parse(localStorage.getItem(`Testes_${sharedVariables.nameUser}`) || "[]");
@@ -214,7 +210,8 @@ class ManipuleElements {
         allKeys.sort();
     
         if (allKeys.length === 0) {
-            console.error('Nenhum dado encontrado no localStorage.');
+            alert('Não Existem Dados para Serem Exportados pois Você Ainda não Realizou Nenhum Teste...');
+            console.error('Nenhum dado encontrado.');
             return;
         }
     
@@ -274,7 +271,7 @@ class ManipuleElements {
         divModal.classList.add('open');
         document.querySelector('#inputConfigTime').value = sharedVariables.durationTest / 1000;
         divModal.addEventListener('click', (e) => {
-            if (e.target.id === 'close' || e.target.id === 'divModal') {
+            if (e.target.id === 'close' || e.target.id === 'divModalConfig') {
                 divModal.classList.remove('open');
             }
         });
@@ -296,6 +293,8 @@ class ManipuleElements {
         const resultsUser = localStorage.getItem(lastUsers);
 
         if (!resultsUser) {
+            document.querySelector('#headerResults').style.display = 'none';
+            this.createElement('h1', "Você ainda não realizou o teste...");
             console.error("Erro: Dados do usuário não encontrados.");
             return;
         }
@@ -339,9 +338,9 @@ class ManipuleElements {
             reactionSlower = Math.max(...arrTimesTotal);
         }
 
-        this.createElement('p', `Média de Reação: ${generalAverage.toFixed(2)}`);
-        this.createElement('p', `Reação mais Rápida: ${isNaN(reactionFaster) ? 'N/A' : reactionFaster}`);
-        this.createElement('p', `Reação mais Lenta: ${isNaN(reactionSlower) ? 'N/A' : reactionSlower}`);
+        this.createElement('p', `Média de Reação: ${generalAverage.toFixed(2)}ms`);
+        this.createElement('p', `Reação mais Rápida: ${isNaN(reactionFaster) ? 'N/A' : reactionFaster}ms`);
+        this.createElement('p', `Reação mais Lenta: ${isNaN(reactionSlower) ? 'N/A' : reactionSlower}ms`);
         this.createElement('p', `Erros no Laranja: ${sumErrorsOranged}`);
         this.createElement('p', `Erros no Branco: ${sumErrorsWhite}`);
     }
@@ -351,6 +350,14 @@ class ManipuleElements {
         element.textContent = msg;
         element.classList.add(`${el}ModalResults`);
         document.querySelector('#resultsUsersModal').appendChild(element);
+    }
+
+    clearHistoryResults () {
+        document.querySelector('#msgHistorySucessConfig').style.display = 'block';
+        setTimeout(() => {
+            document.querySelector('#msgHistorySucessConfig').style.display = 'none';
+        }, 3000);
+        return localStorage.clear();
     }
 };
 
@@ -380,7 +387,7 @@ document.querySelector("#toggleStart").addEventListener('click', () => {
     test.start();
 });
 
-document.querySelector("#btnModal").addEventListener('click', () => {
+document.querySelector("#btnResults").addEventListener('click', () => {
     manipuleElements.manipuleModalResults();
 
     const results = document.querySelector("#resultsUsersModal");
@@ -419,4 +426,10 @@ document.querySelector('#sendConfigTime').addEventListener('click', () => {
             msgErroConfig.style.display = 'none';
         }, 4000)
     }
+});
+
+document.querySelector("#clearResults").addEventListener('click', () => {
+    manipuleElements.clearHistoryResults();
+
+
 });

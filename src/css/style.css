@@ -217,7 +217,7 @@ body {
     text-align: center;
 }
 
-#btnModal {
+#btnResults {
     width: 70px;
     height: 30px;
     border: none;
@@ -237,13 +237,12 @@ body {
     background-color: rgba(60, 40, 40, 0);
 }
 
-#headerModal {
+#headerResults {
     color: #fff;
     margin-bottom: 20px;
     font-family: 'Outfit';
     font-size: 47px;
 }
-
 
 #headerConfig {
     margin-bottom: 50px;
@@ -268,6 +267,7 @@ body {
     flex-direction: column;
     align-items: center;
 }
+
 #sendConfigTime {
     width: 200px;
     height: 35px;
@@ -310,3 +310,30 @@ body {
     font-size: 12px;
 }
 
+#clearResults {
+        width: 200px;
+        height: 35px;
+        padding: 2px 0px;
+        background-color: rgb(75, 76, 76);
+        color: rgb(255, 255, 255);
+        border: none;
+        cursor: pointer;
+        margin-top: 70px;
+        font-size: 13px;
+        font-family: Outfit, sans-serif;
+}
+
+.h1ModalResults {
+    color: #fff;
+    margin-bottom: 20px;
+    font-family: 'Outfit';
+    font-size: 36px;
+    text-align: center;
+}
+
+#msgHistorySucessConfig {
+    color: #05fe1e;
+    font-family: 'Outfit';
+    font-size: 12px;
+    margin-left: 8px;
+}
