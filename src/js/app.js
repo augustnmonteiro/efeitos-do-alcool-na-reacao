@@ -221,7 +221,6 @@ class ManipuleElements {
     
         let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort((a, b) => a.localeCompare(b));
     
-        // Mapa para armazenar IDs dos usuários
         let userIdsMap = {};
     
         sortedKeys.forEach(key => {
@@ -230,7 +229,6 @@ class ManipuleElements {
             if (testData) {
                 let data = JSON.parse(testData);
                 data.forEach(item => {
-                    // Verifica se o ID para o usuário já foi gerado
                     if (!userIdsMap.hasOwnProperty(item.name)) {
                         userIdsMap[item.name] = this.generateUserId(item);
                     }
@@ -271,25 +269,21 @@ class ManipuleElements {
     }
 
     generateUserId(item) {
-        const currentDate = new Date();
-        const timestamp = currentDate.getTime().toString().slice(-7); // Obtém os últimos 7 dígitos do timestamp
-    
-        // Obtém a primeira e a última letra do nome
+        const randomIntegerHundred = Math.floor(Math.random() * 900) + 100;
+        const randomInteger = Math.floor(Math.random() * 90) + 10;
         const firstLetter = item.name.charAt(0).toLowerCase();
         const lastLetter = item.name.charAt(item.name.length - 1).toLowerCase();
     
-        // Gera 4 letras aleatórias da palavra "Augusto monteiro"
         const randomString = this.generateRandomString(4);
     
-        // Combina os componentes de uma maneira não ordenada
-        const userId = firstLetter + timestamp.slice(0, 3) + firstLetter + timestamp.slice(3) + randomString + lastLetter;
+        const userId = firstLetter + randomIntegerHundred + firstLetter + randomInteger + randomString + lastLetter;
     
         return userId;
     }
     
     
     generateRandomString(length) {
-        const characters = "abcdefghijklmnopqrstuvwxyz/$13589874";
+        const characters = "abcdefghijklmnopqrstuvwxyz@&$";
         let randomString = '';
         for (let i = 0; i < length; i++) {
             const randomIndex = Math.floor(Math.random() * characters.length);
