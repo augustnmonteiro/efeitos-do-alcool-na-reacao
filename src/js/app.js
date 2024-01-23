@@ -11,6 +11,7 @@ const sharedVariables = {
     durationTest: (60 * 1000)
 };
 
+
 class Test {
 
     constructor() {
@@ -212,42 +213,46 @@ class ManipuleElements {
     generateCSV() {
         let allKeys = Object.keys(localStorage);
         allKeys.sort();
-
+    
         if (allKeys.length === 0) {
             alert('Não Existem Dados para Serem Exportados pois Você Ainda não Realizou Nenhum Teste...');
             console.error('Nenhum dado encontrado.');
             return;
         }
-
+    
         let csvContentWithName = 'id;name;dose;errorWhite;errorOrange;timeReaction;avgTimeReaction\n';
         let csvContentWithoutName = 'id;dose;errorWhite;errorOrange;timeReaction;avgTimeReaction\n';
-
+    
         let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort((a, b) => a.localeCompare(b));
-
+    
+        let userIdsMap = {};
+    
         sortedKeys.forEach(key => {
             let testData = localStorage.getItem(key);
-
+    
             if (testData) {
                 let data = JSON.parse(testData);
-
                 data.forEach(item => {
-                    // const timeReactionString = Array.isArray(item.timeReaction) ? item.timeReaction.join(',') : item.timeReaction;
-                    console.log(item.timeReaction.join(','));
-
+                    if (!userIdsMap.hasOwnProperty(item.name)) {
+                        userIdsMap[item.name] = this.generateUserId(item);
+                    }
+    
+                    const userID = userIdsMap[item.name];
+    
                     const csvWithNameLine = [
-                        item.id, item.name, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
+                        userID, item.name, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
                     ].join(';') + '\n';
-                    
+    
                     const csvWithoutNameLine = [
-                        item.id, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
+                        userID, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
                     ].join(';') + '\n';
-
+    
                     csvContentWithName += csvWithNameLine;
                     csvContentWithoutName += csvWithoutNameLine;
                 });
             }
         });
-
+    
         this.downloadFileTest(csvContentWithName, `Teste com o nome do Usuário.csv`);
         this.downloadFileTest(csvContentWithoutName, `Teste sem o nome do Usuário.csv`);
     }
@@ -266,6 +271,31 @@ class ManipuleElements {
             document.body.removeChild(link);
         }
     }
+
+    generateUserId(item) {
+        const randomIntegerHundred = Math.floor(Math.random() * 900) + 100;
+        const randomInteger = Math.floor(Math.random() * 90) + 10;
+        const firstLetter = item.name.charAt(0).toLowerCase();
+        const lastLetter = item.name.charAt(item.name.length - 1).toLowerCase();
+    
+        const randomString = this.generateRandomString(4);
+    
+        const userId = firstLetter + randomIntegerHundred + firstLetter + randomInteger + randomString + lastLetter;
+    
+        return userId;
+    }
+    
+    
+    generateRandomString(length) {
+        const characters = "abcdefghijklmnopqrstuvwxyz@&$";
+        let randomString = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            randomString += characters.charAt(randomIndex);
+        }
+        return randomString;
+    }
+    
 
     exportData() {
         const btnExportData = document.querySelector('#btnExportData');
