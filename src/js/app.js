@@ -11,6 +11,7 @@ const sharedVariables = {
     durationTest: (60 * 1000)
 };
 
+
 class Test {
 
     constructor() {
@@ -208,42 +209,48 @@ class ManipuleElements {
     generateCSV() {
         let allKeys = Object.keys(localStorage);
         allKeys.sort();
-
+    
         if (allKeys.length === 0) {
             alert('Não Existem Dados para Serem Exportados pois Você Ainda não Realizou Nenhum Teste...');
             console.error('Nenhum dado encontrado.');
             return;
         }
-
+    
         let csvContentWithName = 'id;name;dose;errorWhite;errorOrange;timeReaction;avgTimeReaction\n';
         let csvContentWithoutName = 'id;dose;errorWhite;errorOrange;timeReaction;avgTimeReaction\n';
-
+    
         let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort((a, b) => a.localeCompare(b));
-
+    
+        // Mapa para armazenar IDs dos usuários
+        let userIdsMap = {};
+    
         sortedKeys.forEach(key => {
             let testData = localStorage.getItem(key);
-
+    
             if (testData) {
                 let data = JSON.parse(testData);
-
                 data.forEach(item => {
-                    // const timeReactionString = Array.isArray(item.timeReaction) ? item.timeReaction.join(',') : item.timeReaction;
-                    console.log(item.timeReaction.join(','));
-
+                    // Verifica se o ID para o usuário já foi gerado
+                    if (!userIdsMap.hasOwnProperty(item.name)) {
+                        userIdsMap[item.name] = this.generateUserId(item);
+                    }
+    
+                    const userID = userIdsMap[item.name];
+    
                     const csvWithNameLine = [
-                        item.id, item.name, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
+                        userID, item.name, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
                     ].join(';') + '\n';
-                    
+    
                     const csvWithoutNameLine = [
-                        item.id, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
+                        userID, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReaction.join(',') + "\"", item.avgTimeReaction
                     ].join(';') + '\n';
-
+    
                     csvContentWithName += csvWithNameLine;
                     csvContentWithoutName += csvWithoutNameLine;
                 });
             }
         });
-
+    
         this.downloadFileTest(csvContentWithName, `Teste com o nome do Usuário.csv`);
         this.downloadFileTest(csvContentWithoutName, `Teste sem o nome do Usuário.csv`);
     }
@@ -262,6 +269,35 @@ class ManipuleElements {
             document.body.removeChild(link);
         }
     }
+
+    generateUserId(item) {
+        const currentDate = new Date();
+        const timestamp = currentDate.getTime().toString().slice(-7); // Obtém os últimos 7 dígitos do timestamp
+    
+        // Obtém a primeira e a última letra do nome
+        const firstLetter = item.name.charAt(0).toLowerCase();
+        const lastLetter = item.name.charAt(item.name.length - 1).toLowerCase();
+    
+        // Gera 4 letras aleatórias da palavra "Augusto monteiro"
+        const randomString = this.generateRandomString(4);
+    
+        // Combina os componentes de uma maneira não ordenada
+        const userId = firstLetter + timestamp.slice(0, 3) + firstLetter + timestamp.slice(3) + randomString + lastLetter;
+    
+        return userId;
+    }
+    
+    
+    generateRandomString(length) {
+        const characters = "abcdefghijklmnopqrstuvwxyz/$13589874";
+        let randomString = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            randomString += characters.charAt(randomIndex);
+        }
+        return randomString;
+    }
+    
 
     exportData() {
         const btnExportData = document.querySelector('#btnExportData');
