@@ -468,6 +468,4 @@ document.querySelector('#sendConfigTime').addEventListener('click', () => {
 
 document.querySelector("#clearResults").addEventListener('click', () => {
     manipuleElements.clearHistoryResults();
-
-
 });
