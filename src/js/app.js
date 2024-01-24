@@ -41,6 +41,7 @@ class Test {
         try {
             let testData = JSON.parse(localStorage.getItem(`Testes_${sharedVariables.nameUser}`) || "[]");
 
+            let timeReaction = sharedVariables.reactionRed;
             sharedVariables.avgTimeReaction = parseFloat(
                 Array.isArray(timeReaction) ? timeReaction.reduce((sum, value) => sum + value, 0) / timeReaction.length : timeReaction)
                 .toFixed(2);
@@ -51,7 +52,7 @@ class Test {
                 dose: sharedVariables.doseUser,
                 errorWhite: sharedVariables.ReactionWhite,
                 errorOrange: sharedVariables.reactionOrange,
-                timeReaction: sharedVariables.reactionRed,
+                timeReaction: timeReaction,
                 avgTimeReaction: parseFloat(sharedVariables.averageReactionTime)
             });
 
