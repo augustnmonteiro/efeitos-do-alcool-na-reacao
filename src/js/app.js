@@ -53,7 +53,7 @@ class Test {
                 errorWhite: sharedVariables.ReactionWhite,
                 errorOrange: sharedVariables.reactionOrange,
                 timeReaction: timeReaction,
-                avgTimeReaction: parseFloat(sharedVariables.averageReactionTime)
+                avgTimeReaction: parseFloat(sharedVariables.averageReactionTime.toFixed(2))
             });
 
             localStorage.setItem(`Testes_${sharedVariables.nameUser}`, JSON.stringify(testData));
