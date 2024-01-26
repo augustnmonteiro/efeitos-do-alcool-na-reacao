@@ -1,4 +1,3 @@
-
 import sharedVariables from './sharedVariables.js';
 import verifications from './validations.js';
 import manipuleElements from "./manipuleElements.js";
@@ -35,8 +34,6 @@ class Test {
             sharedVariables.avgReactionTime = parseFloat(
                 Array.isArray(sharedVariables.timeReactionRed) ? sharedVariables.timeReactionRed.reduce((sum, value) => sum + value, 0) / sharedVariables.timeReactionRed.length : sharedVariables.timeReactionRed)
                 .toFixed(2);
-
-                console.log(sharedVariables.avgReactionTime);
 
             testData.push({
                 id: testData.length + 1,

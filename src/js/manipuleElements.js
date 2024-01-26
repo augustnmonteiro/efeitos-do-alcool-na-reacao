@@ -147,7 +147,7 @@ class ManipuleElements {
         }
 
         // Manipulando Média de Reação
-        let sumAverage = Average.reduce((soma, valor) => soma + valor, 0);
+        let sumAverage = Average.map(Number).reduce((soma, valor) => soma + valor, 0);
         let generalAverage = sumAverage / Average.length;
 
         // Manipulando Erros
