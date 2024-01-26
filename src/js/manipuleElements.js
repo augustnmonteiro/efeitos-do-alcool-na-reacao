@@ -17,26 +17,18 @@ class ManipuleElements {
     
         let sortedKeys = allKeys.filter(key => key.startsWith('Testes_')).sort((a, b) => a.localeCompare(b));
     
-        let userIdsMap = {};
-    
         sortedKeys.forEach(key => {
             let testData = localStorage.getItem(key);
     
             if (testData) {
                 let data = JSON.parse(testData);
                 data.forEach(item => {
-                    if (!userIdsMap.hasOwnProperty(item.name)) {
-                        userIdsMap[item.name] = this.generateUserId(item);
-                    }
-    
-                    const userID = userIdsMap[item.name];
-    
                     const csvWithNameLine = [
-                        userID, item.name, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReactionRed.join(',') + "\"", item.avgTimeReaction
+                        item.id, item.name, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReactionRed.join(',') + "\"", item.avgTimeReaction
                     ].join(';') + '\n';
     
                     const csvWithoutNameLine = [
-                        userID, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReactionRed.join(',') + "\"", item.avgTimeReaction
+                        item.id, item.dose, item.errorWhite, item.errorOrange, "\"" + item.timeReactionRed.join(',') + "\"", item.avgTimeReaction
                     ].join(';') + '\n';
     
                     csvContentWithName += csvWithNameLine;
@@ -71,15 +63,13 @@ class ManipuleElements {
         })
     }
     
-    generateUserId(item) {
+    generateUserId() {
         const randomIntegerHundred = Math.floor(Math.random() * 900) + 100;
         const randomInteger = Math.floor(Math.random() * 90) + 10;
-        const firstLetter = item.name.charAt(0).toLowerCase();
-        const lastLetter = item.name.charAt(item.name.length - 1).toLowerCase();
+      
+        const randomString = this.generateRandomString(6);
     
-        const randomString = this.generateRandomString(4);
-    
-        const userId = firstLetter + randomIntegerHundred + firstLetter + randomInteger + randomString + lastLetter;
+        const userId = randomIntegerHundred + randomInteger + randomString;
     
         return userId;
     }

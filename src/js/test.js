@@ -30,13 +30,19 @@ class Test {
     createData() {
         try {
             let testData = JSON.parse(localStorage.getItem(`Testes_${sharedVariables.nameUser}`) || "[]");
-
             sharedVariables.avgReactionTime = parseFloat(
                 Array.isArray(sharedVariables.timeReactionRed) ? sharedVariables.timeReactionRed.reduce((sum, value) => sum + value, 0) / sharedVariables.timeReactionRed.length : sharedVariables.timeReactionRed)
                 .toFixed(2);
-
+                
+            let userID;
+            if (testData.length > 0) {
+                userID = testData[0].id;
+            } else {
+                userID = manipuleElements.generateUserId();
+            }
+    
             testData.push({
-                id: testData.length + 1,
+                id: userID,
                 name: sharedVariables.nameUser,
                 dose: sharedVariables.doseUser,
                 errorWhite: sharedVariables.errorWhite,
@@ -44,16 +50,14 @@ class Test {
                 timeReactionRed: sharedVariables.timeReactionRed,
                 avgTimeReaction: sharedVariables.avgReactionTime
             });
-
             localStorage.setItem(`Testes_${sharedVariables.nameUser}`, JSON.stringify(testData));
-
             localStorage.setItem('UltimoUsuario', `Testes_${sharedVariables.nameUser}`);
         } catch (error) {
             console.error("Ocorreu um erro: ", error);
             alert(`Ocorreu um erro, tente novamente.`);
         }
     }
-
+    
     controllerElementsAndStyle() {
         let divContainer = document.querySelector('#container');
         if (divContainer.style.display === "none") {
