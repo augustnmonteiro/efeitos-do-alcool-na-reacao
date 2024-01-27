@@ -141,16 +141,16 @@ class Test {
         }
 
         //Comentar esse trecho de código abaixo para não mostrar o resultado após o fim do teste
-        manipuleElements.manipuleModalResults();
+        // manipuleElements.manipuleModalResults();
 
-        const results = document.querySelector("#resultsUsersModal");
+        // const results = document.querySelector("#resultsUsersModal");
 
-        if (results.childNodes.length < 1) {
-            manipuleElements.showResultsModal();
-        } else {
-            results.innerHTML = '';
-            manipuleElements.showResultsModal();
-        }
+        // if (results.childNodes.length < 1) {
+        //     manipuleElements.showResultsModal();
+        // } else {
+        //     results.innerHTML = '';
+        //     manipuleElements.showResultsModal();
+        // }
     }
 };
 
